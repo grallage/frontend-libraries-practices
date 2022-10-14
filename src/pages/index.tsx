@@ -19,6 +19,10 @@ const data: LiProps[] = [
     url: "./redux",
     name: "rudux",
   },
+  {
+    url: "./msw",
+    name: "msw",
+  },
 ];
 
 const Home: NextPage = () => {

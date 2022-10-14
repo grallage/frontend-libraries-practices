@@ -5,3 +5,26 @@
 - Open **_Command Palette_** (Cmd+Shift+P) and select TypeScript: select TypeScript Version ...
 - Select to use Workspace Version
 - Or Open **_Command Palette_** and select TypeScript: Restart TS Server
+
+##Fixed msw issue: Did you mean to import @mswjs/interceptors/lib/interceptors/ClientRequest/index.js?
+
+[links](https://pullanswer.com/questions/with-msw-unhandledrejection-error-err_unsupported_dir_import)
+
+next.config.js:
+
+```
+  experimental: {
+    esmExternals: false,
+  },
+```
+
+##Tell VSCode to auto-fix eslint errors on save
+
+```
+// .vscode/settings.json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
+```

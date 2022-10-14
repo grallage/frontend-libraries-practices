@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@/libs/*": ["src/libs/*"],
-      "@/components/*": ["src/components/*"]
+      "@/components/*": ["src/components/*"],
+      "@/__mocks__/*": ["src/__mocks__/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

@@ -67,3 +67,5 @@ describe("The Dashboard Page", () => {
     cy.get("h1").should("contain", "jane.lane");
   });
 });
+
+export default {};
