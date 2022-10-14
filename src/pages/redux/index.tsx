@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import Head from "next/head";
 import NextLink from "next/link";
 
 interface LiProps {
@@ -12,16 +12,11 @@ interface UlProps {
 
 const data: LiProps[] = [
   {
-    url: "./formik",
-    name: "formik",
-  },
-  {
-    url: "./redux",
-    name: "rudux",
+    url: "./redux/demo1",
+    name: "basic",
   },
 ];
-
-const Home: NextPage = () => {
+const Page = () => {
   const Li = (props: LiProps) => {
     return (
       <li>
@@ -43,9 +38,13 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Redux Demo List</title>
+      </Head>
+
       <Ul list={data} />
     </>
   );
 };
 
-export default Home;
+export default Page;
