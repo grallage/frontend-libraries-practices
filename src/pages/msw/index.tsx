@@ -1,5 +1,3 @@
-import Head from 'next/head'
-import NextLink from 'next/link'
 import { useState } from 'react'
 
 // @ts-ignore
@@ -39,13 +37,21 @@ const Page = ({ book }) => {
 }
 
 export async function getStaticProps() {
-  const res = await fetch('https://my.backend/book')
-  const book = await res.json()
+  const { NEXT_PUBLIC_API_MOCKING } = process.env
 
+  if (NEXT_PUBLIC_API_MOCKING === 'true') {
+    const res = await fetch('https://my.backend/book')
+    // const res = await fetch('/books')
+    const book = await res.json()
+
+    return {
+      props: {
+        book,
+      },
+    }
+  }
   return {
-    props: {
-      book,
-    },
+    props: {},
   }
 }
 // export async function getServerSideProps() {

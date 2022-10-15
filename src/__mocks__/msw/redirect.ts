@@ -1,4 +1,4 @@
-import { compose, context } from "msw";
+import { compose, context } from 'msw'
 // import { ResponseComposition, DefaultBodyType } from "msw";
 
 // export function redirect(destination: string, statusCode: number) {
@@ -12,6 +12,6 @@ import { compose, context } from "msw";
 export function redirect(destination: string, statusCode: number) {
   return compose(
     context.status(statusCode),
-    context.set("Location", destination)
-  );
+    context.set('Location', destination)
+  )
 }

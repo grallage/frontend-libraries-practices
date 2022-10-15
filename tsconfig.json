@@ -19,7 +19,8 @@
     "paths": {
       "@/libs/*": ["src/libs/*"],
       "@/components/*": ["src/components/*"],
-      "@/__mocks__/*": ["src/__mocks__/*"]
+      "@/__mocks__/*": ["src/__mocks__/*"],
+      "@/styles/*": ["styles/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

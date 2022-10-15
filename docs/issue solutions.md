@@ -28,3 +28,12 @@ next.config.js:
   }
 }
 ```
+
+##Nextjs component is rendering twice?
+
+This issue is about React 18 Strict Mode, see [https://github.com/vercel/next.js/issues/35822](https://github.com/vercel/next.js/issues/35822)
+
+```
+// next.config.js
+reactStrictMode: false
+```
