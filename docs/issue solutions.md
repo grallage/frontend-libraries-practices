@@ -37,3 +37,9 @@ This issue is about React 18 Strict Mode, see [https://github.com/vercel/next.js
 // next.config.js
 reactStrictMode: false
 ```
+
+##NextJS export with getServerSideProps
+
+[https://github.com/vercel/next.js/discussions/15674](https://github.com/vercel/next.js/discussions/15674)
+
+see `server-side-render.tsx`

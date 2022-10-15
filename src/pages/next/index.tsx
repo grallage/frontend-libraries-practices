@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import Head from 'next/head'
 import NextLink from 'next/link'
 
 interface LiProps {
@@ -12,24 +12,19 @@ interface UlProps {
 
 const data: LiProps[] = [
   {
-    url: './formik',
-    name: 'formik',
+    url: './next/paths/1',
+    name: '/next/paths/1',
   },
   {
-    url: './redux',
-    name: 'rudux',
+    url: './next/paths/2',
+    name: '/next/paths/2',
   },
   {
-    url: './msw',
-    name: 'msw',
-  },
-  {
-    url: './next',
-    name: 'nextjs',
+    url: './next/paths/server-side-render',
+    name: 'server-side-render',
   },
 ]
-
-const Home: NextPage = () => {
+const Page = () => {
   const Li = (props: LiProps) => {
     return (
       <li>
@@ -51,9 +46,19 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Formik Demo List</title>
+      </Head>
+      <a
+        href={`https://formik.org/docs/tutorial`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Formik Docs
+      </a>
       <Ul list={data} />
     </>
   )
 }
 
-export default Home
+export default Page
