@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react'
+import Layout from '@/components/custom/Layout'
 import Head from 'next/head'
 import NextLink from 'next/link'
 
@@ -22,6 +24,10 @@ const data: LiProps[] = [
   {
     url: './next/paths/server-side-render',
     name: 'server-side-render',
+  },
+  {
+    url: './next/image',
+    name: 'image',
   },
 ]
 const Page = () => {
@@ -58,6 +64,14 @@ const Page = () => {
       </a>
       <Ul list={data} />
     </>
+  )
+}
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      <>{page}</>
+    </Layout>
   )
 }
 

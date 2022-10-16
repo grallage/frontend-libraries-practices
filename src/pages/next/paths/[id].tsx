@@ -60,7 +60,7 @@ export async function getStaticProps({ params }: StaticProps) {
      * - At most once every [revalidate] seconds
     
      */
-    revalidate: 10,
+    // revalidate: 10,
   }
 }
 

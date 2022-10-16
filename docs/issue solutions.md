@@ -43,3 +43,14 @@ reactStrictMode: false
 [https://github.com/vercel/next.js/discussions/15674](https://github.com/vercel/next.js/discussions/15674)
 
 see `server-side-render.tsx`
+
+##Error: Image Optimization using Next.js' default loader is not compatible with `next export`.
+
+```
+// next.config.js
+module.exports = {
+    images: {
+        unoptimized: true
+    }
+}
+```
