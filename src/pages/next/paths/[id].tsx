@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { GetStaticProps } from 'next'
 
 type Props = {
   data: string
 }
-type StaticProps = {
+type StaticProps = GetStaticProps & {
   params: {
     id: string
   }

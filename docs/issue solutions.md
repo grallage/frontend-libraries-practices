@@ -54,3 +54,15 @@ module.exports = {
     }
 }
 ```
+
+##.env.development TypeError: Cannot read properties of undefined (reading 'split')
+
+[solution](https://github.com/motdotla/dotenv-expand/issues/65)
+
+```
+// .env.development
+
+RANDOM_TEXT=YHDNWD*@DN$
+# change to:
+RANDOM_TEXT=YHDNWD*@DN\$
+```

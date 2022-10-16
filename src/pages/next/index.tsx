@@ -29,6 +29,10 @@ const data: LiProps[] = [
     url: './next/image',
     name: 'image',
   },
+  {
+    url: './next/environment',
+    name: 'environment',
+  },
 ]
 const Page = () => {
   const Li = (props: LiProps) => {
