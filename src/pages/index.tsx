@@ -30,6 +30,9 @@ const data: LiProps[] = [
 ]
 
 const Home: NextPage = () => {
+  console.log(
+    "# This msg only print in dev mode if you'd set nextConfig.js removeConsole settings."
+  )
   const Li = (props: LiProps) => {
     return (
       <li>
