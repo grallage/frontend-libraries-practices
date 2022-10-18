@@ -17,7 +17,8 @@ const data: LiProps[] = [
   },
   {
     url: './redux/demo2',
-    name: 'async msw',
+    name: 'async, msw, createSlice, createAsyncThunk, PayloadAction, \
+    createSelector, createEntityAdapter',
   },
 ]
 const Page = () => {
@@ -47,6 +48,21 @@ const Page = () => {
       </Head>
 
       <Ul list={data} />
+
+      <div>
+        <ul>
+          <li>
+            避免在“useSelector”里引用/创建新的对象，可以搭配createSelector使用。
+          </li>
+          <li>
+            组件可以使用“React.memo()”包装，以防props的地址改变时非必要的重渲染。
+          </li>
+          <li>
+            如果数据需要排序，使用“createEntityAdapter” 管理normalized data，
+            {'{ids: [], entities: {}}'}
+          </li>
+        </ul>
+      </div>
     </>
   )
 }

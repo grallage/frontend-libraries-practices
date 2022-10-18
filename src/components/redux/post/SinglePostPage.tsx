@@ -1,14 +1,13 @@
-import React from 'react'
-import { useRouter } from 'next/router'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+
 import { useSelector } from '@/libs/redux/hooks'
-
-import type { RootState } from '@/libs/redux/store'
-import { PostAuthor } from './PostAuthor'
-import { TimeAgo } from './TimeAgo'
-import { ReactionButtons } from './ReactionButtons'
-
 import { selectPostById } from '@/libs/redux/slices/posts/postSlice'
+import type { RootState } from '@/libs/redux/store'
+
+import { PostAuthor } from './PostAuthor'
+import { ReactionButtons } from './ReactionButtons'
+import { TimeAgo } from './TimeAgo'
 
 type Props = {
   postId: number
@@ -35,7 +34,7 @@ export const SinglePostPage = (props: Props) => {
       <article className="post">
         <h2>{post.title}</h2>
         <div>
-          <PostAuthor userId={post.user.id} />
+          <PostAuthor userId={post.user} />
           <TimeAgo timestamp={post.date} />
         </div>
         <p className="post-content">{post.content}</p>

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
-
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
-// redux
-import reduxStore from '@/libs/redux/store'
+
+import React, { useEffect, useState } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 
+// redux
+import reduxStore from '@/libs/redux/store'
 import '@/styles/scss/main.scss'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -57,8 +57,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   if (matchReduxRouter) {
     return (
       <ReduxProvider store={reduxStore}>
-        getLayout(
-        <Component {...pageProps} />)
+        {getLayout(<Component {...pageProps} />)}
       </ReduxProvider>
     )
   }

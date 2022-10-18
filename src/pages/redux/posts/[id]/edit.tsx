@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
-
-import { useSelector, useDispatch } from '@/libs/redux/hooks'
 import { useRouter } from 'next/router'
 
+import React, { ReactElement, useState } from 'react'
+
+import { Navbar } from '@/components/redux/user/navbar/Navbar'
+import { useDispatch, useSelector } from '@/libs/redux/hooks'
 import {
   postUpdated,
   selectPostById,
@@ -17,8 +18,8 @@ const EditPostForm = () => {
 
   const post = useSelector((state: RootState) => selectPostById(state, postId))
 
-  const [title, setTitle] = useState(post?.title)
-  const [content, setContent] = useState(post?.content)
+  const [title, setTitle] = useState(post?.title ?? '')
+  const [content, setContent] = useState(post?.content ?? '')
 
   const dispatch = useDispatch()
 
@@ -61,4 +62,14 @@ const EditPostForm = () => {
     </section>
   )
 }
+
+EditPostForm.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <div className="redux-posts">
+      <Navbar />
+      <>{page}</>
+    </div>
+  )
+}
+
 export default EditPostForm

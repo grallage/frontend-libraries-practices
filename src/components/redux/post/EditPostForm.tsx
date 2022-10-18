@@ -1,22 +1,19 @@
+import { useRouter } from 'next/router'
+
 import React, { useState } from 'react'
 
-import { useRouter } from 'next/router'
 // import { useDispatch, useSelector } from 'react-redux'
-import { useSelector, useDispatch } from '@/libs/redux/hooks'
-
+import { useDispatch, useSelector } from '@/libs/redux/hooks'
 import {
   postUpdated,
   selectPostById,
 } from '@/libs/redux/slices/posts/postSlice'
-import type { RootState } from '@/libs/redux/store'
 
 export const EditPostForm = () => {
   const router = useRouter()
-  var { id } = router.query
+  let { id } = router.query as { id: string }
 
-  const post = useSelector((state: RootState) =>
-    selectPostById(state, id!.toString())
-  )
+  const post = useSelector((state) => selectPostById(state, id))
 
   const [title, setTitle] = useState(post?.title ?? '')
   const [content, setContent] = useState(post?.content ?? '')
@@ -32,8 +29,8 @@ export const EditPostForm = () => {
 
   const onSavePostClicked = () => {
     if (title && content) {
-      dispatch(postUpdated({ id: id!.toString(), title, content }))
-      router.push(`/redux/posts/${id!.toString()}`)
+      dispatch(postUpdated({ id: id, title, content }))
+      router.push(`/redux/posts/${id}`)
     }
   }
 

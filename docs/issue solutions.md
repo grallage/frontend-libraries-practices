@@ -66,3 +66,34 @@ RANDOM_TEXT=YHDNWD*@DN$
 # change to:
 RANDOM_TEXT=YHDNWD*@DN\$
 ```
+
+##Sort imports using Prettier
+
+```
+// .prettierrc.json
+{
+  ...
+  "importOrder": [
+    "^(next/(.*)$)|^(next$)",
+    "<THIRD_PARTY_MODULES>",
+    "next-seo.config",
+    "^@/(.*)$",
+    "^utils/(.*)$",
+    "^assets/(.*)$",
+    "^@fontsource/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
+```
+
+```
+// .vscode/settings.json
+
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true,
+        "source.sortMembers": true
+    },
+```

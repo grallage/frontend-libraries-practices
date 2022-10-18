@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
+
 import counterReducer from '@/libs/redux/slices/counter/counterSlice'
+import notificationsReducer from '@/libs/redux/slices/notifications/notificationsSlice'
 import postsReducer from '@/libs/redux/slices/posts/postSlice'
 import usersReducer from '@/libs/redux/slices/users/userSlice'
 
@@ -12,6 +14,7 @@ const store = configureStore({
     counter: counterReducer,
     posts: postsReducer,
     users: usersReducer,
+    notifications: notificationsReducer,
   },
   preloadedState: loadFromLocalStorage(),
 })

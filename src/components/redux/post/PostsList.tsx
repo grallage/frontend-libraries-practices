@@ -1,25 +1,42 @@
-import React, { useEffect } from 'react'
-// import { useSelector, useDispatch } from 'react-redux'
-import { useSelector, useDispatch } from '@/libs/redux/hooks'
 import NextLink from 'next/link'
 
+import { EntityId } from '@reduxjs/toolkit'
+import { useEffect } from 'react'
+
+// import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from '@/libs/redux/hooks'
+import {
+  fetchPosts,
+  selectPostById,
+  selectPostIds,
+} from '@/libs/redux/slices/posts/postSlice'
+
 import { PostAuthor } from './PostAuthor'
-import { TimeAgo } from './TimeAgo'
 import { ReactionButtons } from './ReactionButtons'
-import { selectAllPosts, fetchPosts } from '@/libs/redux/slices/posts/postSlice'
-import { Post } from '@/libs/redux/types'
-import type { RootState } from '@/libs/redux/store'
+import { TimeAgo } from './TimeAgo'
 
 type Props = {
-  post: Post
+  // post: Post
+  postId: EntityId
 }
 
-const PostExcerpt = ({ post }: Props) => {
+// const PostExcerpt = ({ post }: Props) => {
+const PostExcerpt = ({ postId }: Props) => {
+  const post = useSelector((state) => selectPostById(state, postId))
+
+  if (typeof post === 'undefined') {
+    return (
+      <>
+        <p>Post not found</p>
+      </>
+    )
+  }
+
   return (
     <article className="post-excerpt" key={post.id}>
       <h3>{post.title}</h3>
       <div>
-        <PostAuthor userId={post.user.id} />
+        <PostAuthor userId={post.user} />
         <TimeAgo timestamp={post.date} />
       </div>
       <p className="post-content">{post.content.substring(0, 100)}</p>
@@ -48,10 +65,11 @@ export const Spinner = ({ text = '', size = '5em' }) => {
 
 export const PostsList = () => {
   const dispatch = useDispatch()
-  const posts = useSelector(selectAllPosts)
+  // const posts = useSelector(selectAllPosts)
+  const orderedPostIds = useSelector(selectPostIds)
 
-  const postStatus = useSelector((state: RootState) => state.posts.status)
-  const error = useSelector((state: RootState) => state.posts.error)
+  const postStatus = useSelector((state) => state.posts.status)
+  const error = useSelector((state) => state.posts.error)
 
   useEffect(() => {
     if (postStatus === 'idle') {
@@ -64,13 +82,18 @@ export const PostsList = () => {
   if (postStatus === 'loading') {
     content = <Spinner text="Loading..." />
   } else if (postStatus === 'succeeded') {
-    // Sort posts in reverse chronological order by datetime string
-    const orderedPosts = posts
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date))
-
-    content = orderedPosts.map((post) => (
-      <PostExcerpt key={post.id} post={post} />
+    /**
+     * Sort posts in reverse chronological order by datetime string
+     * Old version:
+     * // const orderedPosts = posts
+     * //   .slice()
+     * //   .sort((a, b) => b.date.localeCompare(a.date))
+     * // content = orderedPosts.map((post) => (
+     * //   <PostExcerpt key={post.id} post={post} />
+     * // ))
+     */
+    content = orderedPostIds.map((postId) => (
+      <PostExcerpt key={postId} postId={postId} />
     ))
   } else if (postStatus === 'failed') {
     content = <div>{error}</div>

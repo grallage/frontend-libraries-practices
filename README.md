@@ -61,6 +61,9 @@ yarn add --dev --exact prettier
 ## it will prevent conflicts between prettier and eslint rules.
 yarn add --dev eslint-config-prettier
 
+## Prettier plugin sort imports
+yarn add --dev @trivago/prettier-plugin-sort-imports
+
 ```
 
 edit ```.vscode/settings.json```

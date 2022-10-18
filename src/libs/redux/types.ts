@@ -16,7 +16,7 @@ export type Post = {
   content: string
   reactions: Reaction
   comments: comment[]
-  user: User
+  user: string
 }
 
 export type comment = {
@@ -33,4 +33,12 @@ export type User = {
   name: string
   username: string
   posts: Post[]
+}
+export type notification = {
+  id: string
+  date: string
+  isNew: boolean
+  read: boolean
+  message: string
+  user: string
 }

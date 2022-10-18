@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+
 // import { useDispatch, useSelector } from 'react-redux'
-import { useSelector, useDispatch } from '@/libs/redux/hooks'
+import { useDispatch, useSelector } from '@/libs/redux/hooks'
 import { addNewPost } from '@/libs/redux/slices/posts/postSlice'
+import { selectAllUsers } from '@/libs/redux/slices/users/userSlice'
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
@@ -10,7 +12,8 @@ export const AddPostForm = () => {
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
   const dispatch = useDispatch()
-  const users = useSelector((state) => state.users)
+  // const users = useSelector((state) => state.users)
+  const users = useSelector(selectAllUsers)
 
   const onTitleChanged = (e: {
     target: { value: React.SetStateAction<string> }

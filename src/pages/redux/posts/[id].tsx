@@ -1,12 +1,13 @@
-import React from 'react'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useSelector } from '@/libs/redux/hooks'
-import NextLink from 'next/link'
+import { ReactElement } from 'react'
 
 import { PostAuthor } from '@/components/redux/post/PostAuthor'
-import { TimeAgo } from '@/components/redux/post/TimeAgo'
 import { ReactionButtons } from '@/components/redux/post/ReactionButtons'
+import { TimeAgo } from '@/components/redux/post/TimeAgo'
+import { Navbar } from '@/components/redux/user/navbar/Navbar'
+import { useSelector } from '@/libs/redux/hooks'
 import { selectPostById } from '@/libs/redux/slices/posts/postSlice'
 
 const SinglePostPage = () => {
@@ -29,7 +30,7 @@ const SinglePostPage = () => {
       <article className="post">
         <h2>{post.title}</h2>
         <div>
-          <PostAuthor userId={post.user.id} />
+          <PostAuthor userId={post.user} />
           <TimeAgo timestamp={post.date} />
         </div>
         <p className="post-content">{post.content}</p>
@@ -45,4 +46,14 @@ const SinglePostPage = () => {
     </section>
   )
 }
+
+SinglePostPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <div className="redux-posts">
+      <Navbar />
+      <>{page}</>
+    </div>
+  )
+}
+
 export default SinglePostPage
