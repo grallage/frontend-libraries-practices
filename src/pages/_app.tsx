@@ -28,9 +28,8 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   const matchReduxRouter = router.pathname.startsWith('/redux')
   const matchMSWRouter = router.pathname.startsWith('/msw')
 
-  const [isLoadingMsw, setIsLoadingMsw] = useState(
-    !(NEXT_PUBLIC_API_MOCKING === 'true')
-  )
+  const [isLoadingMsw, setIsLoadingMsw] = useState(true)
+
   const shouldUseMsw = matchMSWRouter || matchReduxRouter
 
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -40,17 +39,18 @@ function MyApp({ Component, pageProps }: MyAppProps) {
     async function initMocks() {
       const { setupMocks } = await require('@/__mocks__/msw')
       await setupMocks()
-      setIsLoadingMsw(true)
+      setIsLoadingMsw(false)
     }
 
     if (NEXT_PUBLIC_API_MOCKING === 'true' && shouldUseMsw) {
       initMocks()
     } else {
-      setIsLoadingMsw(true)
+      initMocks()
+      setIsLoadingMsw(false)
     }
   }, [])
 
-  if (!isLoadingMsw) {
+  if (isLoadingMsw) {
     return null
   }
 

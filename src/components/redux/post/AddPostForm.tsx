@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
 
 // import { useDispatch, useSelector } from 'react-redux'
-import { useDispatch, useSelector } from '@/libs/redux/hooks'
-import { addNewPost } from '@/libs/redux/slices/posts/postSlice'
+import { useSelector } from '@/libs/redux/hooks'
+import { useAddNewPostMutation } from '@/libs/redux/slices/api/apiSlice'
+// import { addNewPost } from '@/libs/redux/slices/posts/postSlice'
 import { selectAllUsers } from '@/libs/redux/slices/users/userSlice'
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [userId, setUserId] = useState('')
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  // const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  const [addNewPost, { isLoading }] = useAddNewPostMutation()
 
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   // const users = useSelector((state) => state.users)
   const users = useSelector(selectAllUsers)
 
@@ -25,21 +27,30 @@ export const AddPostForm = () => {
     target: { value: React.SetStateAction<string> }
   }) => setUserId(e.target.value)
 
-  const canSave =
-    [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+  /**
+   * Old version:
+   * const canSave =
+   *   [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+   */
+  const canSave = [title, content, userId].every(Boolean) && !isLoading
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus('pending')
-        await dispatch(addNewPost({ title, content, user: userId })).unwrap()
+        // setAddRequestStatus('pending')
+
+        /**
+         * Old version:
+         * await dispatch(addNewPost({ title, content, user: userId })).unwrap()
+         */
+        await addNewPost({ title, content, user: userId }).unwrap()
         setTitle('')
         setContent('')
         setUserId('')
       } catch (err) {
         console.error('Failed to save the post: ', err)
       } finally {
-        setAddRequestStatus('idle')
+        // setAddRequestStatus('idle')
       }
     }
   }

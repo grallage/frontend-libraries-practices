@@ -1,28 +1,25 @@
 import NextLink from 'next/link'
 
 import { EntityId } from '@reduxjs/toolkit'
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 
+import { useGetPostsQuery } from '@/libs/redux/slices/api/apiSlice'
 // import { useSelector, useDispatch } from 'react-redux'
-import { useDispatch, useSelector } from '@/libs/redux/hooks'
-import {
-  fetchPosts,
-  selectPostById,
-  selectPostIds,
-} from '@/libs/redux/slices/posts/postSlice'
+import { Post } from '@/libs/redux/types'
 
 import { PostAuthor } from './PostAuthor'
 import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 
 type Props = {
-  // post: Post
-  postId: EntityId
+  post: Post
+  postId: EntityId | null
 }
 
 // const PostExcerpt = ({ post }: Props) => {
-const PostExcerpt = ({ postId }: Props) => {
-  const post = useSelector((state) => selectPostById(state, postId))
+const PostExcerpt = ({ postId, post }: Props) => {
+  // Old version:
+  // const post = useSelector((state) => selectPostById(state, postId))
 
   if (typeof post === 'undefined') {
     return (
@@ -64,24 +61,45 @@ export const Spinner = ({ text = '', size = '5em' }) => {
 }
 
 export const PostsList = () => {
-  const dispatch = useDispatch()
-  // const posts = useSelector(selectAllPosts)
-  const orderedPostIds = useSelector(selectPostIds)
+  /**
+   * Old version:
+   * const dispatch = useDispatch()
+   * // const posts = useSelector(selectAllPosts)
+   * const orderedPostIds = useSelector(selectPostIds)
+   *
+   * const postStatus = useSelector((state) => state.posts.status)
+   * const error = useSelector((state) => state.posts.error)
+   *
+   * useEffect(() => {
+   *   if (postStatus === 'idle') {
+   *   dispatch(fetchPosts())
+   * }
+   * }, [postStatus, dispatch])
+   */
+  const {
+    data: posts = [],
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useGetPostsQuery()
 
-  const postStatus = useSelector((state) => state.posts.status)
-  const error = useSelector((state) => state.posts.error)
-
-  useEffect(() => {
-    if (postStatus === 'idle') {
-      dispatch(fetchPosts())
-    }
-  }, [postStatus, dispatch])
+  const sortedPosts = useMemo(() => {
+    const sortedPosts = posts.slice()
+    // Sort posts in descending chronological order
+    sortedPosts.sort((a, b) => b.date.localeCompare(a.date))
+    return sortedPosts
+  }, [posts])
 
   let content
 
-  if (postStatus === 'loading') {
+  // if (postStatus === 'loading') {
+  if (isLoading) {
     content = <Spinner text="Loading..." />
-  } else if (postStatus === 'succeeded') {
+    // } else if (postStatus === 'succeeded') {
+  } else if (isSuccess) {
     /**
      * Sort posts in reverse chronological order by datetime string
      * Old version:
@@ -91,17 +109,34 @@ export const PostsList = () => {
      * // content = orderedPosts.map((post) => (
      * //   <PostExcerpt key={post.id} post={post} />
      * // ))
+     *
+     * Old version2:
+     * // content = orderedPostIds.map((postId) => (
+     * //   <PostExcerpt key={postId} postId={postId} />
+     * // ))
      */
-    content = orderedPostIds.map((postId) => (
-      <PostExcerpt key={postId} postId={postId} />
+    const renderedPosts = sortedPosts.map((post) => (
+      <PostExcerpt key={post.id} post={post} postId={null} />
     ))
-  } else if (postStatus === 'failed') {
-    content = <div>{error}</div>
+
+    content = (
+      <div className={`posts-container ${isFetching ? 'disabled' : ''}`}>
+        {renderedPosts}
+      </div>
+    )
+
+    // } else if (postStatus === 'failed') {
+  } else if (isError) {
+    // content = <div>{error}</div>
+    content = <div>{error.toString()}</div>
   }
 
   return (
     <section className="posts-list">
       <h2>Posts</h2>
+      {/* useless if you have set createApi.tagTypes */}
+      <button onClick={refetch}>Refetch Posts</button>
+
       {content}
     </section>
   )

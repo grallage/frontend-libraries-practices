@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 
+import { apiSlice } from '@/libs/redux/slices/api/apiSlice'
 import counterReducer from '@/libs/redux/slices/counter/counterSlice'
 import notificationsReducer from '@/libs/redux/slices/notifications/notificationsSlice'
 import postsReducer from '@/libs/redux/slices/posts/postSlice'
@@ -15,8 +16,11 @@ const store = configureStore({
     posts: postsReducer,
     users: usersReducer,
     notifications: notificationsReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
-  preloadedState: loadFromLocalStorage(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
+  // preloadedState: loadFromLocalStorage(),
 })
 
 // convert object to string and store in localStorage
