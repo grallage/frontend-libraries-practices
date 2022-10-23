@@ -1,4 +1,5 @@
 export type Reaction = {
+  // Index Signature
   [key: string]: number | Post | string
   id: string
   thumbsUp: number
@@ -15,11 +16,11 @@ export type Post = {
   date: string
   content: string
   reactions: Reaction
-  comments: comment[]
+  comments: Comment[]
   user: string
 }
 
-export type comment = {
+export type Comment = {
   id: string
   date: string
   text: string
@@ -34,7 +35,7 @@ export type User = {
   username: string
   posts: Post[]
 }
-export type notification = {
+export type Notification = {
   id: string
   date: string
   isNew: boolean

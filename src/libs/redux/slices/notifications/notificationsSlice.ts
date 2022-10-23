@@ -6,9 +6,9 @@ import {
 import axios from 'axios'
 
 import { RootState } from '@/libs/redux/store'
-import { notification } from '@/libs/redux/types'
+import { Notification } from '@/libs/redux/types'
 
-const notificationsAdapter = createEntityAdapter<notification>({
+const notificationsAdapter = createEntityAdapter<Notification>({
   sortComparer: (a, b) => b.date.localeCompare(a.date),
 })
 
@@ -16,7 +16,7 @@ const notificationsSlice = createSlice({
   name: 'notifications',
   initialState: notificationsAdapter.getInitialState(), // initialState: [],
   reducers: {
-    allNotificationsRead(state, action: { type: string; payload: undefined }) {
+    allNotificationsRead(state, action: { type: string; payload: void }) {
       /**
        * Old version:
        * // state.forEach((notification) => {
@@ -54,11 +54,15 @@ const notificationsSlice = createSlice({
   },
 })
 
-export const fetchNotifications = createAsyncThunk(
+export const fetchNotifications = createAsyncThunk<
+  Notification[], // Returned
+  void, // ThunkArg
+  { state: RootState } // ThunkApiConfig
+>(
   'notifications/fetchNotifications',
   /**
    * https://redux-toolkit.js.org/api/createAsyncThunk#payloadcreator
-   * @param arg when we call dispatch func, like dispatch(addPost(newPost)),
+   * @param arg ThunkArg. When we call dispatch func, like dispatch(addPost(newPost)),
    *  we can pass an argument into a thunk action creator
    * @param thunkAPI The second argument to our payload creator is a
    *  thunkAPI object containing several useful functions and pieces of information:
@@ -67,7 +71,7 @@ export const fetchNotifications = createAsyncThunk(
    */
   async (_, thunkAPI) => {
     const { getState } = thunkAPI
-    const allNotifications = selectAllNotifications(getState() as RootState)
+    const allNotifications = selectAllNotifications(getState())
     const [latestNotification] = allNotifications
     const latestTimestamp = latestNotification ? latestNotification.date : ''
     const response = await axios.get(
@@ -78,8 +82,12 @@ export const fetchNotifications = createAsyncThunk(
 )
 
 export default notificationsSlice.reducer
-export const { allNotificationsRead } = notificationsSlice.actions
-// export const selectAllNotifications = (state) => state.notifications
 
+export const { allNotificationsRead } = notificationsSlice.actions
+
+/**
+ * Old version:
+ * // export const selectAllNotifications = (state) => state.notifications
+ */
 export const { selectAll: selectAllNotifications } =
   notificationsAdapter.getSelectors<RootState>((state) => state.notifications)

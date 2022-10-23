@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { apiSlice } from '@/libs/redux/slices/api/apiSlice'
 import counterReducer from '@/libs/redux/slices/counter/counterSlice'
 import notificationsReducer from '@/libs/redux/slices/notifications/notificationsSlice'
+import notificationsReducer2 from '@/libs/redux/slices/notifications/notificationsSlice2'
 import postsReducer from '@/libs/redux/slices/posts/postSlice'
 import usersReducer from '@/libs/redux/slices/users/userSlice'
 
@@ -16,6 +17,7 @@ const store = configureStore({
     posts: postsReducer,
     users: usersReducer,
     notifications: notificationsReducer,
+    notificationsWithRTK: notificationsReducer2,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

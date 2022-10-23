@@ -2,22 +2,31 @@ import { useRouter } from 'next/router'
 
 import React, { useState } from 'react'
 
-import { useDispatch, useSelector } from '@/libs/redux/hooks'
+// import { useDispatch, useSelector } from 'react-redux'
+// import { useDispatch } from '@/libs/redux/hooks'
 import {
-  postUpdated,
-  selectPostById,
-} from '@/libs/redux/slices/posts/postSlice'
+  useEditPostMutation,
+  useGetPostQuery,
+} from '@/libs/redux/slices/api/apiSlice'
 
 export const EditPostForm = () => {
   const router = useRouter()
-  let { id } = router.query as { id: string }
+  var { id } = router.query as { id: string }
 
-  const post = useSelector((state) => selectPostById(state, id))
+  id = id.endsWith('-2') ? id.replace('-2', '') : id
+
+  /**
+   * Old version:
+   * const post = useSelector((state) => selectPostById(state, id))
+   */
+  const { data: post } = useGetPostQuery(id)
+  const [updatePost, { isLoading }] = useEditPostMutation()
 
   const [title, setTitle] = useState(post?.title ?? '')
   const [content, setContent] = useState(post?.content ?? '')
 
-  const dispatch = useDispatch()
+  // Old version:
+  // const dispatch = useDispatch()
 
   const onTitleChanged = (e: {
     target: { value: React.SetStateAction<string> }
@@ -28,9 +37,13 @@ export const EditPostForm = () => {
 
   const onSavePostClicked = async () => {
     if (title && content) {
-      dispatch(postUpdated({ id: id, title, content }))
+      /**
+       * Old version:
+       * dispatch(postUpdated({ id: id, title, content }))
+       */
+      await updatePost({ id: id, title, content })
 
-      router.push(`/redux/posts/${id}`)
+      router.push(`/redux/posts/${id}-2`)
     }
   }
 
@@ -46,6 +59,7 @@ export const EditPostForm = () => {
           placeholder="What's on your mind?"
           value={title}
           onChange={onTitleChanged}
+          disabled={isLoading}
         />
         <label htmlFor="postContent">Content:</label>
         <textarea
@@ -53,6 +67,7 @@ export const EditPostForm = () => {
           name="postContent"
           value={content}
           onChange={onContentChanged}
+          disabled={isLoading}
         />
       </form>
       <button type="button" onClick={onSavePostClicked}>

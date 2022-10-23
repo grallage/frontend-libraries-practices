@@ -90,6 +90,7 @@ yarn add @faker-js/faker --dev
 
 ```
 yarn add seedrandom
+yarn add @types/seedrandom
 ```
 
 * date-fns

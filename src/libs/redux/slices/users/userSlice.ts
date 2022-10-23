@@ -18,11 +18,14 @@ const usersAdapter = createEntityAdapter<User>()
  */
 const initialState = usersAdapter.getInitialState()
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  // const jwt = localStorage.getItem('user_jwt')
-  const response = await axios.get('/fakeApi/users')
-  return response.data
-})
+export const fetchUsers = createAsyncThunk<User[], void>(
+  'users/fetchUsers',
+  async () => {
+    // const jwt = localStorage.getItem('user_jwt')
+    const response = await axios.get('/fakeApi/users')
+    return response.data
+  }
+)
 
 const usersSlice = createSlice({
   name: 'users',

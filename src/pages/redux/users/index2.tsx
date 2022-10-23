@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import UsersList from '@/components/redux/user/UsersList'
+import UsersList from '@/components/redux/user/UsersList2'
 import Navbar from '@/components/redux/user/navbar/Navbar'
 
 function Page() {

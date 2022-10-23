@@ -1,43 +1,32 @@
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useGetPostQuery } from '@/libs/redux/slices/api/apiSlice'
+import { useSelector } from '@/libs/redux/hooks'
+import { selectPostById } from '@/libs/redux/slices/posts/postSlice'
+import type { RootState } from '@/libs/redux/store'
 
 import { PostAuthor } from './PostAuthor'
-import { Spinner } from './PostsList'
 import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 
-// type Props = {
-//   postId: number
-// }
-
-// export const SinglePostPage = (props: Props) => {
 export const SinglePostPage = () => {
   const router = useRouter()
   var { id } = router.query
 
-  /**
-   * Old version:
-   * const post = useSelector((state: RootState) =>
-   *   selectPostById(state, id!.toString())
-   * )
-   */
-  const { data: post, isFetching, isSuccess } = useGetPostQuery(id as string)
+  const post = useSelector((state: RootState) =>
+    selectPostById(state, id!.toString())
+  )
 
-  let content
+  if (!post) {
+    return (
+      <section>
+        <h2>Post not found! {id}</h2>
+      </section>
+    )
+  }
 
-  if (isFetching) {
-    content = <Spinner text="Loading..." />
-  } else if (isSuccess) {
-    if (!post) {
-      return (
-        <section>
-          <h2>Post not found! {id}</h2>
-        </section>
-      )
-    }
-    content = (
+  return (
+    <section>
       <article className="post">
         <h2>{post.title}</h2>
         <div>
@@ -55,8 +44,6 @@ export const SinglePostPage = () => {
           <a>Edit Post</a>
         </NextLink>
       </article>
-    )
-  }
-
-  return <section>{content}</section>
+    </section>
+  )
 }

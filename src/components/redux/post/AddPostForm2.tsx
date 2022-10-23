@@ -1,20 +1,19 @@
 import React, { useState } from 'react'
 
-import { useDispatch, useSelector } from '@/libs/redux/hooks'
-import { addNewPost } from '@/libs/redux/slices/posts/postSlice'
-import { selectAllUsers } from '@/libs/redux/slices/users/userSlice'
+import { useSelector } from '@/libs/redux/hooks'
+import { useAddNewPostMutation } from '@/libs/redux/slices/api/apiSlice'
+// import { addNewPost } from '@/libs/redux/slices/posts/postSlice'
+import { selectAllUsers } from '@/libs/redux/slices/users/userSlice2'
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [userId, setUserId] = useState('')
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  // const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  const [addNewPost, { isLoading }] = useAddNewPostMutation()
 
-  const dispatch = useDispatch()
-  /**
-   * Old version:
-   * const users = useSelector((state) => state.users)
-   */
+  // const dispatch = useDispatch()
+  // const users = useSelector((state) => state.users)
   const users = useSelector(selectAllUsers)
 
   const onTitleChanged = (e: {
@@ -27,18 +26,23 @@ export const AddPostForm = () => {
     target: { value: React.SetStateAction<string> }
   }) => setUserId(e.target.value)
 
-  const canSave =
-    [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+  /**
+   * Old version:
+   * const canSave =
+   *   [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+   */
+  const canSave = [title, content, userId].every(Boolean) && !isLoading
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus('pending')
+        // setAddRequestStatus('pending')
 
-        const newPost = await dispatch(
-          addNewPost({ title, content, user: userId })
-        ).unwrap()
-
+        /**
+         * Old version:
+         * await dispatch(addNewPost({ title, content, user: userId })).unwrap()
+         */
+        await addNewPost({ title, content, user: userId }).unwrap()
         setTitle('')
         setContent('')
         setUserId('')

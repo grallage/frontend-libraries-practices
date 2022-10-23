@@ -1,5 +1,5 @@
-import { useDispatch } from '@/libs/redux/hooks'
-import { reactionAdded } from '@/libs/redux/slices/posts/postSlice'
+// import { useDispatch } from 'react-redux'
+import { useAddReactionMutation } from '@/libs/redux/slices/api/apiSlice'
 import { Post } from '@/libs/redux/types'
 
 const reactionEmoji = {
@@ -15,7 +15,8 @@ type props = {
 }
 
 export const ReactionButtons = ({ post }: props) => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
+  const [addReaction] = useAddReactionMutation()
 
   const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => {
     return (
@@ -23,8 +24,9 @@ export const ReactionButtons = ({ post }: props) => {
         key={name}
         type="button"
         className="muted-button reaction-button"
-        onClick={() =>
-          dispatch(reactionAdded({ postId: post.id, reactionName: name }))
+        onClick={
+          // () => dispatch(reactionAdded({ postId: post.id, reaction: name }))
+          () => addReaction({ postId: post.id, reactionName: name })
         }
       >
         <>

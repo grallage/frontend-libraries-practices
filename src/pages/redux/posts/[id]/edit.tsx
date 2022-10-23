@@ -1,69 +1,20 @@
 import { useRouter } from 'next/router'
 
-import React, { ReactElement, useState } from 'react'
+import { ReactElement } from 'react'
 
-import { Navbar } from '@/components/redux/user/navbar/Navbar'
-import { useDispatch, useSelector } from '@/libs/redux/hooks'
-import {
-  postUpdated,
-  selectPostById,
-} from '@/libs/redux/slices/posts/postSlice'
-import type { RootState } from '@/libs/redux/store'
+import { EditPostForm } from '@/components/redux/post/EditPostForm'
+import { EditPostForm as EditPostForm2 } from '@/components/redux/post/EditPostForm2'
+import Navbar from '@/components/redux/user/navbar/Navbar'
 
-const EditPostForm = () => {
+const Page = () => {
   const router = useRouter()
-  const { id } = router.query
+  var { id } = router.query as { id: string }
+  const shouldUseRTK = id.endsWith('-2')
 
-  const postId = id?.toString().replace('edit-', '') ?? ''
-
-  const post = useSelector((state: RootState) => selectPostById(state, postId))
-
-  const [title, setTitle] = useState(post?.title ?? '')
-  const [content, setContent] = useState(post?.content ?? '')
-
-  const dispatch = useDispatch()
-
-  const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setTitle(e.target.value)
-  const onContentChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setContent(e.target.value)
-
-  const onSavePostClicked = () => {
-    if (title && content) {
-      dispatch(postUpdated({ id: postId, title, content }))
-      router.push(`/redux/posts/${postId}`)
-    }
-  }
-
-  return (
-    <section className="redux-posts">
-      <h2>Edit Post</h2>
-      <form>
-        <label htmlFor="postTitle">Post Title:</label>
-        <input
-          type="text"
-          id="postTitle"
-          name="postTitle"
-          placeholder="What's on your mind?"
-          value={title}
-          onChange={onTitleChanged}
-        />
-        <label htmlFor="postContent">Content:</label>
-        <textarea
-          id="postContent"
-          name="postContent"
-          value={content}
-          onChange={(e) => onContentChanged}
-        />
-      </form>
-      <button type="button" onClick={onSavePostClicked}>
-        Save Post
-      </button>
-    </section>
-  )
+  return shouldUseRTK ? <EditPostForm2 /> : <EditPostForm />
 }
 
-EditPostForm.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement) {
   return (
     <div className="redux-posts">
       <Navbar />
@@ -72,4 +23,4 @@ EditPostForm.getLayout = function getLayout(page: ReactElement) {
   )
 }
 
-export default EditPostForm
+export default Page

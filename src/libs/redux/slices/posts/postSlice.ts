@@ -11,11 +11,6 @@ import axios from 'axios'
 import type { RootState } from '@/libs/redux/store'
 import { Post } from '@/libs/redux/types'
 
-export type PostPayload = {
-  postId: string
-  reaction: string
-}
-
 export type Entities = {
   [name: string]: Post | null | undefined
 }
@@ -52,16 +47,19 @@ const initialState: EntityState<Post> & {
   error: null,
 })
 
-export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
-  const response = await axios.get('/fakeApi/posts')
-  return response.data
-})
-
-export const addNewPost = createAsyncThunk(
-  'posts/addNewPost',
-  async (initialPost: { title: string; content: string; user: string }) => {
-    const response = await axios.post('/fakeApi/posts', initialPost)
+export const fetchPosts = createAsyncThunk<Post[], void>(
+  'posts/fetchPosts',
+  async () => {
+    const response = await axios.get('/fakeApi/posts')
     return response.data
+  }
+)
+
+export const addNewPost = createAsyncThunk<Post, Partial<Post>>(
+  'posts/addNewPost',
+  async (initialPost) => {
+    const response = await axios.post('/fakeApi/posts', initialPost)
+    return response.data as Post
   }
 )
 
@@ -69,8 +67,11 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    reactionAdded(state, action: PayloadAction<PostPayload>) {
-      const { postId, reaction } = action.payload
+    reactionAdded(
+      state,
+      action: PayloadAction<{ postId: string; reactionName: string }>
+    ) {
+      const { postId, reactionName: reaction } = action.payload
 
       /**
        * Old version:

@@ -1,13 +1,11 @@
-// @ts-nocheck
-import { rest, setupWorker } from 'msw'
-import { factory, oneOf, manyOf, primaryKey } from '@mswjs/data'
-import { nanoid } from '@reduxjs/toolkit'
 import { faker } from '@faker-js/faker'
-
-import seedrandom from 'seedrandom'
-import { Server as MockSocketServer } from 'mock-socket'
-
+import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data'
+import { Entity, FactoryAPI } from '@mswjs/data/lib/glossary'
+import { nanoid } from '@reduxjs/toolkit'
 import { parseISO } from 'date-fns'
+import { Client, Server as MockSocketServer } from 'mock-socket'
+import { rest } from 'msw'
+import seedrandom from 'seedrandom'
 
 const NUM_USERS = 3
 const POSTS_PER_USER = 3
@@ -36,7 +34,6 @@ if (useSeededRNG) {
   } else {
     seedDate = new Date()
     randomSeedString = seedDate.toISOString()
-    clg
     // localStorage.setItem('randomTimestampSeed', randomSeedString)
   }
 
@@ -49,14 +46,14 @@ function getRandomInt(min: number, max: number) {
   max = Math.floor(max)
   return Math.floor(rng() * (max - min + 1)) + min
 }
-const randomFromArray = (array: []) => {
+const randomFromArray = <T>(array: T[]) => {
   const index = getRandomInt(0, array.length - 1)
   return array[index]
 }
 
 /* MSW Data Model Setup */
 
-export const db = factory({
+const model = {
   user: {
     id: primaryKey(nanoid),
     firstName: String,
@@ -89,6 +86,21 @@ export const db = factory({
     eyes: Number,
     post: oneOf('post'),
   },
+}
+
+type ModelType = {
+  user: typeof model.user
+  post: typeof model.post
+  comment: typeof model.comment
+  reaction: typeof model.reaction
+  // }>
+}
+
+export const db = factory<ModelType>({
+  user: model.user,
+  post: model.post,
+  comment: model.comment,
+  reaction: model.reaction,
 })
 
 const createUserData = () => {
@@ -103,7 +115,7 @@ const createUserData = () => {
   }
 }
 
-const createPostData = (user) => {
+const createPostData = (user: Entity<ModelType, 'user'>) => {
   return {
     title: faker.lorem.words(),
     date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
@@ -123,13 +135,12 @@ for (let i = 0; i < NUM_USERS; i++) {
   }
 }
 
-const serializePost = (post) => ({
+const serializePost = (post: Entity<ModelType, 'post'>) => ({
   ...post,
-  user: post.user.id,
+  user: post.user!.id,
 })
 
 /* MSW REST API Handlers */
-
 export const handlers = [
   rest.get('/fakeApi/posts', (req, res, ctx) => {
     const posts = db.post.getAll().map(serializePost)
@@ -157,47 +168,66 @@ export const handlers = [
     return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(serializePost(post)))
   }),
   rest.get('/fakeApi/posts/:postId', function (req, res, ctx) {
+    const postId = req.params.postId as string
     const post = db.post.findFirst({
-      where: { id: { equals: req.params.postId } },
+      where: { id: { equals: postId } },
     })
-    return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(serializePost(post)))
+
+    if (post) {
+      return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(serializePost(post)))
+    }
+    return res(ctx.delay(ARTIFICIAL_DELAY_MS))
+    // return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.status(404), ctx.json({}))
   }),
   rest.patch('/fakeApi/posts/:postId', async (req, res, ctx) => {
     const { id, ...data } = await req.json()
+    const postId = req.params.postId as string
     const updatedPost = db.post.update({
       where: {
         id: {
-          equals: req.params.postId,
+          equals: postId,
         },
       },
       data,
     })
-    return res(
-      ctx.delay(ARTIFICIAL_DELAY_MS),
-      ctx.json(serializePost(updatedPost))
-    )
+    if (updatedPost) {
+      return res(
+        ctx.delay(ARTIFICIAL_DELAY_MS),
+        ctx.json(serializePost(updatedPost))
+      )
+    }
+    return res(ctx.delay(ARTIFICIAL_DELAY_MS))
   }),
 
   rest.get('/fakeApi/posts/:postId/comments', (req, res, ctx) => {
+    const postId = req.params.postId as string
     const post = db.post.findFirst({
       where: {
         id: {
-          equals: req.params.postId,
+          equals: postId,
         },
       },
     })
+    if (post) {
+      return res(
+        ctx.delay(ARTIFICIAL_DELAY_MS),
+        ctx.json({
+          comments: post.comments,
+        })
+      )
+    }
     return res(
       ctx.delay(ARTIFICIAL_DELAY_MS),
       ctx.json({
-        comments: post.comments,
+        comments: undefined,
       })
     )
   }),
 
   rest.post('/fakeApi/posts/:postId/reactions', async (req, res, ctx) => {
-    const postId = req.params.postId
+    const postId = req.params.postId as string
 
-    const data = await req.json()
+    const data: any = await req.json()
     const reaction = data.reaction
     const post = db.post.findFirst({
       where: {
@@ -207,6 +237,10 @@ export const handlers = [
       },
     })
 
+    if (!post) {
+      return res(ctx.delay(ARTIFICIAL_DELAY_MS))
+    }
+
     const updatedPost = db.post.update({
       where: {
         id: {
@@ -214,8 +248,10 @@ export const handlers = [
         },
       },
       data: {
+        // @ts-ignore
         reactions: {
           ...post.reactions,
+          // @ts-ignore
           [reaction]: (post.reactions[reaction] += 1),
         },
       },
@@ -223,7 +259,7 @@ export const handlers = [
 
     return res(
       ctx.delay(ARTIFICIAL_DELAY_MS),
-      ctx.json(serializePost(updatedPost))
+      ctx.json(serializePost(updatedPost as Entity<ModelType, 'post'>))
     )
   }),
   rest.get('/fakeApi/notifications', (req, res, ctx) => {
@@ -246,42 +282,47 @@ export const handlers = [
 // worker.printHandlers() // Optional: nice for debugging to see all available route handlers that will be intercepted
 
 /* Mock Websocket Setup */
+let currentSocket: Client
+try {
+  const socketServer = new MockSocketServer('ws://localhost')
+  socketServer.on('connection', (socket) => {
+    currentSocket = socket
 
-const socketServer = new MockSocketServer('ws://localhost')
-socketServer.on('connection', (socket) => {
-  currentSocket = socket
+    socket.on('message', (data: any) => {
+      const message = JSON.parse(data)
 
-  socket.on('message', (data) => {
-    const message = JSON.parse(data)
-
-    switch (message.type) {
-      case 'notifications': {
-        const since = message.payload
-        sendRandomNotifications(socket, since)
-        break
+      switch (message.type) {
+        case 'notifications': {
+          const since = message.payload
+          sendRandomNotifications(socket, since)
+          break
+        }
+        default:
+          break
       }
-      default:
-        break
-    }
+    })
+    // temp
+    // socket.close()
   })
-})
-let currentSocket
+  // temp
+  // socketServer.stop()
+} catch (err) {
+  console.error('Failed to connection socketServer: ', err)
+}
 
-const sendMessage = (socket, obj) => {
+const sendMessage = (socket: Client, obj: any) => {
   socket.send(JSON.stringify(obj))
 }
 
 // Allow our UI to fake the server pushing out some notifications over the websocket,
 // as if other users were interacting with the system.
-const sendRandomNotifications = (socket, since) => {
+const sendRandomNotifications = (socket: Client, since: string) => {
   const numNotifications = getRandomInt(1, 5)
-
   const notifications = generateRandomNotifications(since, numNotifications, db)
-
   sendMessage(socket, { type: 'notifications', payload: notifications })
 }
 
-export const forceGenerateNotifications = (since) => {
+export const forceGenerateNotifications = (since: string) => {
   sendRandomNotifications(currentSocket, since)
 }
 
@@ -294,9 +335,13 @@ const notificationTemplates = [
   'sent you a gift',
 ]
 
-function generateRandomNotifications(since, numNotifications, db) {
+function generateRandomNotifications(
+  since: string | undefined,
+  numNotifications: number,
+  db: FactoryAPI<ModelType>
+) {
   const now = new Date()
-  let pastDate
+  let pastDate: Date
 
   if (since) {
     pastDate = parseISO(since)
