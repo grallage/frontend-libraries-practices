@@ -1,9 +1,8 @@
-import React from 'react'
 type Props = {
   src: string
-  srcSet: string[] | string | null | undefined
-  media: string[] | string | null | undefined
-  alt: string | undefined | null
+  srcSet?: string[] | string
+  media?: string[] | string
+  alt?: string
 }
 function Image(props: Props) {
   const { src, alt, srcSet, media, ...others } = props

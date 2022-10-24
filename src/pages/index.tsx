@@ -31,6 +31,10 @@ const data: LiProps[] = [
     url: './swr',
     name: 'swr',
   },
+  {
+    url: './axios',
+    name: 'axios',
+  },
 ]
 
 const Home: NextPage = () => {

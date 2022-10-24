@@ -116,6 +116,15 @@ const Page = () => {
         <p>用户电脑唤醒,或浏览器tags切回来时,会自动获取数据</p>
         <p>
           <a
+            href="https://github.com/vercel/swr/tree/main/examples"
+            target={'_blank'}
+            rel="noreferrer"
+          >
+            All Github Examples
+          </a>
+        </p>
+        <p>
+          <a
             href="https://swr.vercel.app/examples/auth"
             target={'_blank'}
             rel="noreferrer"
