@@ -81,6 +81,40 @@ const Page = () => {
         <title>Redux Demo List</title>
       </Head>
 
+      <div>
+        <a
+          href="https://react-redux.js.org/introduction/getting-started"
+          target="_blank"
+          rel="noreferrer"
+        >
+          react-redux
+        </a>
+        <br />
+        <a
+          href="https://redux.js.org/usage/usage-with-typescript"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Usage with TypeScript
+        </a>
+        <br />
+        <a
+          href="https://redux-toolkit.js.org/api/configureStore"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Redux toolkit API
+        </a>
+        <br />
+        <a
+          href="https://redux-toolkit.js.org/rtk-query/usage/examples"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Redux toolkit Examples
+        </a>
+      </div>
+
       <Ul list={data} />
       <hr />
       <div>

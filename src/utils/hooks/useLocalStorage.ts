@@ -18,7 +18,11 @@ const useLocalStorage = (keyName: string, defaultValue: any) => {
 
   const setValue = (newValue: any) => {
     try {
-      window.localStorage.setItem(keyName, JSON.stringify(newValue))
+      if (typeof newValue === 'undefined') {
+        window.localStorage.removeItem(keyName)
+      } else {
+        window.localStorage.setItem(keyName, JSON.stringify(newValue))
+      }
     } catch (err) {}
     setStoredValue(newValue)
   }

@@ -145,4 +145,13 @@ Run scripts that set and use environment variables across platforms
 yarn add --dev cross-env
 ```
 
+* SWR
+
+数据获取库 - data fetching
+
+```
+yarn add swr
+
+```
+
 ##QA

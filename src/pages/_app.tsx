@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 
 import React, { useEffect, useState } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
+import { SWRConfig, useSWRConfig } from 'swr'
+import { SWRConfiguration } from 'swr/dist/types'
 
 // redux
 import reduxStore from '@/libs/redux/store'
@@ -27,25 +29,27 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   const router = useRouter()
   const matchReduxRouter = router.pathname.startsWith('/redux')
   const matchMSWRouter = router.pathname.startsWith('/msw')
+  const matchSWRRouter = router.pathname.startsWith('/swr')
 
   const [isLoadingMsw, setIsLoadingMsw] = useState(true)
 
   const shouldUseMsw = matchMSWRouter || matchReduxRouter
 
   const getLayout = Component.getLayout ?? ((page) => page)
+  const { ...defaultSWRConfig } = useSWRConfig()
 
   // msw
   useEffect(() => {
     async function initMocks() {
       const { setupMocks } = await require('@/__mocks__/msw')
       await setupMocks()
+      console.log('# start socket.')
       setIsLoadingMsw(false)
     }
 
     if (NEXT_PUBLIC_API_MOCKING === 'true' && shouldUseMsw) {
       initMocks()
     } else {
-      initMocks()
       setIsLoadingMsw(false)
     }
   }, [])
@@ -55,10 +59,22 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   }
 
   if (matchReduxRouter) {
+    console.log('# ReduxProvider actived.')
     return (
       <ReduxProvider store={reduxStore}>
         {getLayout(<Component {...pageProps} />)}
       </ReduxProvider>
+    )
+  }
+
+  if (matchSWRRouter) {
+    // const options: Partial<PublicConfiguration> = {}
+    const options: SWRConfiguration = {}
+    console.log('# SWRConfig actived.')
+    return (
+      <SWRConfig value={{ ...defaultSWRConfig, ...options }}>
+        {getLayout(<Component {...pageProps} />)}
+      </SWRConfig>
     )
   }
 
