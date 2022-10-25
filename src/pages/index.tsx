@@ -35,6 +35,10 @@ const data: LiProps[] = [
     url: './axios',
     name: 'axios',
   },
+  {
+    url: './next-auth',
+    name: 'next-auth',
+  },
 ]
 
 const Home: NextPage = () => {

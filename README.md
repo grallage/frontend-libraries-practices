@@ -154,4 +154,20 @@ yarn add swr
 
 ```
 
+* NextAuth
+
+Demo Projects:
+
+[next-auth](https://github.com/nextauthjs/next-auth)
+
+[next-auth-typescript-example
+](https://github.com/nextauthjs/next-auth-typescript-example)
+
+[Online Demo](https://next-auth-example.vercel.app/)
+
+```
+yarn add next-auth
+
+```
+
 ##QA
