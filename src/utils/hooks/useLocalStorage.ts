@@ -1,7 +1,10 @@
 import React from 'react'
 
-const useLocalStorage = (keyName: string, defaultValue: any) => {
-  const [storedValue, setStoredValue] = React.useState(() => {
+const useLocalStorage = <T>(
+  keyName: string,
+  defaultValue: T
+): [T, (newValue: T) => void] => {
+  const [storedValue, setStoredValue] = React.useState<T>(() => {
     try {
       const value = window.localStorage.getItem(keyName)
 
@@ -16,7 +19,8 @@ const useLocalStorage = (keyName: string, defaultValue: any) => {
     }
   })
 
-  const setValue = (newValue: any) => {
+  // const setValue: (newValue: T) => void = (newValue) => {
+  const setValue = (newValue: T) => {
     try {
       if (typeof newValue === 'undefined') {
         window.localStorage.removeItem(keyName)

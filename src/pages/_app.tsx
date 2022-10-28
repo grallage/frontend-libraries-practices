@@ -9,6 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { SWRConfig, useSWRConfig } from 'swr'
 import { SWRConfiguration } from 'swr/dist/types'
 
+import { SwrAuthProvider } from '@/hook/useSwrAuth'
 // redux
 import reduxStore from '@/libs/redux/store'
 import '@/styles/scss/main.scss'
@@ -48,6 +49,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   const matchReduxRouter = router.pathname.startsWith('/redux')
   const matchMSWRouter = router.pathname.startsWith('/msw')
   const matchSWRRouter = router.pathname.startsWith('/swr')
+  const matchSWRAuthRouter = router.pathname.startsWith('/swr-auth')
   const matchNextAuthRouter = router.pathname.startsWith('/next-auth')
 
   const [isLoadingMsw, setIsLoadingMsw] = useState(true)
@@ -90,12 +92,23 @@ function MyApp({ Component, pageProps }: MyAppProps) {
     // const options: Partial<PublicConfiguration> = {}
     const options: SWRConfiguration = {}
     console.log('# SWRConfig actived.')
+    if (matchSWRAuthRouter) {
+      return (
+        // <SWRConfig value={{ ...defaultSWRConfig, ...options }}>
+        <SWRConfig>
+          <SwrAuthProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </SwrAuthProvider>
+        </SWRConfig>
+      )
+    }
     return (
       <SWRConfig value={{ ...defaultSWRConfig, ...options }}>
         {getLayout(<Component {...pageProps} />)}
       </SWRConfig>
     )
   }
+
   if (matchNextAuthRouter) {
     // To be able to use useSession()
     if (Component.useNextAuth) {

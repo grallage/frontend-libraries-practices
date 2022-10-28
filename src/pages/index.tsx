@@ -32,6 +32,10 @@ const data: LiProps[] = [
     name: 'swr',
   },
   {
+    url: './swr-auth',
+    name: 'swr-auth',
+  },
+  {
     url: './axios',
     name: 'axios',
   },

@@ -19,7 +19,7 @@ function Page() {
   const { mutate } = useSWRConfig()
   const url = 'https://jsonplaceholder.typicode.com/users'
   const { data, error, mutate: mutateUser } = useSWR(url, fetcher)
-  const [JWT, setJWT] = useLocalStorage('swr_mutation', undefined)
+  const [JWT, setJWT] = useLocalStorage<any>('swr_mutation', undefined)
 
   useEffect(() => {
     if (!!JWT && !!data) {
