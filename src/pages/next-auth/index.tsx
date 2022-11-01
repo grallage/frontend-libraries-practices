@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import { getCsrfToken, useSession } from 'next-auth/react'
+import { getCsrfToken, signIn, useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 import { NextPageWithLayout } from '../_app'
@@ -18,6 +18,7 @@ const Link = ({ href }: { href: string }) => {
 
 const Page: NextPageWithLayout = () => {
   const { data: session } = useSession() // /api/auth/session
+
   const { data: session2 } = useSession({
     required: true,
     onUnauthenticated() {
@@ -35,7 +36,7 @@ const Page: NextPageWithLayout = () => {
   useEffect(() => {
     setHasSession(!!session)
     if (!!session) {
-      setEmail(session.user?.email ?? 'undefined')
+      // setEmail(session.user?.email ?? 'undefined')
       const json = JSON.stringify(session)
       console.log(json)
       setDataJson(json)
@@ -66,7 +67,8 @@ const Page: NextPageWithLayout = () => {
     <>
       {hasSession && (
         <>
-          Signed in as {email} <br />
+          {/* Signed in as {email} <br /> */}
+          Signed in as {JSON.stringify(session?.user ?? {})} <br />
           {/* <button onClick={() => signOut()}>Sign out</button> */}
         </>
       )}
@@ -106,6 +108,11 @@ const Page: NextPageWithLayout = () => {
           <strong>{content || '\u00a0'}</strong>
         </p>
       </div>
+      <hr />
+      <div>
+        <p>Django username: {session?.user.username}</p>
+        <p>Django access_token: {session?.access_token}</p>
+      </div>
     </>
   )
 }
@@ -126,7 +133,12 @@ export const NextAuthChecker = ({
   children: React.ReactElement
 }) => {
   // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
-  const { status } = useSession({ required: true })
+  const { status, data: session } = useSession({ required: true })
+  useEffect(() => {
+    if (session?.error === 'RefreshAccessTokenError') {
+      signIn() // Force sign in to hopefully resolve error
+    }
+  }, [session])
 
   if (status === 'loading') {
     return <div>Loading...</div>

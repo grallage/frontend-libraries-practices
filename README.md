@@ -156,6 +156,8 @@ yarn add swr
 
 * NextAuth
 
+other solution: iron-session
+
 Demo Projects:
 
 [next-auth](https://github.com/nextauthjs/next-auth)
@@ -169,5 +171,14 @@ Demo Projects:
 yarn add next-auth
 
 ```
+
+* jwt-decode
+
+This library doesn't validate the token, any well formed JWT can be decoded. You should validate the token in your server-side logic by using something like express-jwt, koa-jwt, Owin Bearer JWT, etc.
+
+```
+yarn add jwt-decode
+```
+
 
 ##QA

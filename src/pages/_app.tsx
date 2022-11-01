@@ -9,7 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { SWRConfig, useSWRConfig } from 'swr'
 import { SWRConfiguration } from 'swr/dist/types'
 
-import { SwrAuthProvider } from '@/hook/useSwrAuth'
+import { SwrAuthProvider } from '@/hooks/useSwrAuth'
 // redux
 import reduxStore from '@/libs/redux/store'
 import '@/styles/scss/main.scss'

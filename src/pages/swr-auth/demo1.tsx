@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { ReactElement, useEffect } from 'react'
 import useSWR, { Fetcher } from 'swr'
 
-import { useAuthAxios } from '@/hook/useAuthAxios'
-import { useSwrAuth } from '@/hook/useSwrAuth'
+import { useAuthAxios } from '@/hooks/useAuthAxios'
+import { useSwrAuth } from '@/hooks/useSwrAuth'
 
 function Page() {
   const auth = useSwrAuth()

@@ -1,4 +1,4 @@
-import { useSwrAuth } from '@/hook/useSwrAuth'
+import { useSwrAuth } from '@/hooks/useSwrAuth'
 
 function Page() {
   const auth = useSwrAuth()

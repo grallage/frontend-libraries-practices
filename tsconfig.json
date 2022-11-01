@@ -21,7 +21,8 @@
       "@/components/*": ["src/components/*"],
       "@/__mocks__/*": ["src/__mocks__/*"],
       "@/styles/*": ["styles/*"],
-      "@/hook/*": ["src/utils/hooks/*"]
+      "@/hooks/*": ["src/utils/hooks/*"],
+      "@/utils/*": ["src/utils/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
