@@ -43,6 +43,10 @@ const data: LiProps[] = [
     url: './next-auth',
     name: 'next-auth',
   },
+  {
+    url: './styled-components',
+    name: 'styled-components',
+  },
 ]
 
 const Home: NextPage = () => {

@@ -6,9 +6,14 @@ import { Session as NextAuthSession } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
+import { ThemeProvider } from 'styled-components'
 import { SWRConfig, useSWRConfig } from 'swr'
 import { SWRConfiguration } from 'swr/dist/types'
 
+import { GlobalStyles } from '@/components/styled-components/GlobalStyles'
+import { darkTheme, lightTheme } from '@/components/styled-components/Theme'
+import Toggle from '@/components/styled-components/Toggler'
+import { useDarkMode } from '@/hooks/useDarkMode'
 import { SwrAuthProvider } from '@/hooks/useSwrAuth'
 // redux
 import reduxStore from '@/libs/redux/store'
@@ -51,6 +56,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   const matchSWRRouter = router.pathname.startsWith('/swr')
   const matchSWRAuthRouter = router.pathname.startsWith('/swr-auth')
   const matchNextAuthRouter = router.pathname.startsWith('/next-auth')
+  const matchStyledComponents = router.pathname.startsWith('/styled-components')
 
   const [isLoadingMsw, setIsLoadingMsw] = useState(true)
 
@@ -58,6 +64,11 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 
   const getLayout = Component.getLayout ?? ((page) => page)
   const { ...defaultSWRConfig } = useSWRConfig()
+
+  // styled-components
+  // const [theme, setTheme] = useState('light')
+  const [theme, themeToggler, mountedComponent] = useDarkMode()
+  const themeMode = theme === 'light' ? lightTheme : darkTheme
 
   // msw
   useEffect(() => {
@@ -132,6 +143,18 @@ function MyApp({ Component, pageProps }: MyAppProps) {
       >
         <Component {...pageProps} />
       </SessionProvider>
+    )
+  }
+
+  if (matchStyledComponents) {
+    console.log('# ThemeProvider actived.')
+    if (!mountedComponent) return <div />
+    return (
+      <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+        <GlobalStyles />
+        <Toggle theme={theme} toggleTheme={themeToggler} />
+        <Component {...pageProps} />
+      </ThemeProvider>
     )
   }
 

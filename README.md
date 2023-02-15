@@ -180,5 +180,16 @@ This library doesn't validate the token, any well formed JWT can be decoded. You
 yarn add jwt-decode
 ```
 
+* styled-components:
+
+```
+yarn add styled-components
+yarn add --dev @types/styled-components
+
+// 因为 NextJS 默认使用 SWC，所以该项目暂不使用 Babel配置： https://nextjs.org/docs/messages/swc-disabled
+# 已经自带 babel-plugin-styled-components，当需要时只需要配置 .babelrc 文件即可
+```
+
+
 
 ##QA
